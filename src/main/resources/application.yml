@@ -1,0 +1,76 @@
+spring:
+  profiles:
+    group:
+      local:
+        - common-private
+        - local-private
+---
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: common-private
+debug: true
+swagger:
+  enable: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-private
+  main:
+    allow-bean-definition-overriding: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+#        hbm2ddl.auto: create
+blog:
+  service:
+    datasource:
+      poolName: blog-service-cp
+      type: com.zaxxer.hikari.HikariDataSource
+      driverClassName: org.h2.Driver
+      jdbcUrl: jdbc:h2:mem:testdb
+      username: sa
+      password:
+      auto-commit: false
+      connectionTimeout: 3000
+      idleTimeout: 0
+      maxLifetime: 58000
+      maximumPoolSize: 5
+      initialization-mode: always
+    jpa:
+      hibernate:
+      #      naming:
+      #        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+      #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect
+          query.in_clause_parameter_padding: true
+          default_batch_fetch_size: 16
+          format_sql: true
+          show_sql: false
+          use_sql_comments: true
+          hbm2ddl.auto: create
+          check_nullability: true
+          connection:
+            provider_disables_autocommit: true
+          jdbc:
+            batch_size: 10000
+            batch_versioned_data: true
+        org:
+          hibernate:
+            envers:
+              audit_table_suffix: _audit
+              store_data_at_delete: true
+              do_not_audit_optimistic_locking_field: false
+      open-in-view: false
